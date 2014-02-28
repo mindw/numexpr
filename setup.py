@@ -9,6 +9,11 @@
 #  rights to use.
 ####################################################################
 
+try:
+    import setuptools
+except ImportError:
+    setuptools = None
+
 import shutil
 import os
 import sys
@@ -18,11 +23,6 @@ from distutils.command.clean import clean
 
 if sys.version_info < (2, 6):
     raise RuntimeError("must use python 2.6 or greater")
-
-try:
-    import setuptools
-except ImportError:
-    setuptools = None
 
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
@@ -34,6 +34,7 @@ with open(os.path.join('numexpr', 'version.py')) as f:
 def setup_package():
     metadata = dict(
                       description='Fast numerical expression evaluator for NumPy',
+                      long_description=open('README.rst','rb').read(),
                       author='David M. Cooke, Francesc Alted and others',
                       author_email='david.m.cooke@gmail.com, faltet@gmail.com',
                       url='https://github.com/pydata/numexpr',
