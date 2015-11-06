@@ -9,10 +9,7 @@
 #  rights to use.
 ####################################################################
 
-try:
-    import setuptools
-except ImportError:
-    setuptools = None
+import setuptools
 
 import shutil
 import os
@@ -52,10 +49,7 @@ def setup_package():
         # pip is used to install Numexpr when Numpy is not yet present in
         # the system.
         # (via https://github.com/abhirk/scikit-learn/blob/master/setup.py)
-        try:
-            from setuptools import setup
-        except ImportError:
-            from distutils.core import setup
+        from setuptools import setup
 
         metadata['name']    = 'numexpr'
         metadata['version'] = version
@@ -196,10 +190,11 @@ def setup_package():
 
                 clean.run(self)
 
-        class build_ext(numpy_build_ext):
+        class build_ext(numpy_build_ext):            
             def build_extension(self, ext):
+                from distutils.msvccompiler import MSVCCompiler
                 # at this point we know what the C compiler is.
-                if self.compiler.compiler_type == 'msvc' or self.compiler.compiler_type == 'intelemw':
+                if isinstance(self.compiler, MSVCCompiler):
                     ext.extra_compile_args = []
                     # also remove extra linker arguments msvc doesn't understand
                     ext.extra_link_args = []
@@ -207,8 +202,7 @@ def setup_package():
                     ext.libraries.remove('m')
                 numpy_build_ext.build_extension(self, ext)
 
-        if setuptools:
-            metadata['zip_safe'] = False
+        metadata['zip_safe'] = False
 
         metadata['cmdclass'] = {
             'build_ext': build_ext,
